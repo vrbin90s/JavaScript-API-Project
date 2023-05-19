@@ -58,7 +58,7 @@ async function getPosts(postList) {
            
             const postTitle = data.title;
             const author = data.user.name;
-            linkElement.textContent = `[${count++}] - ${postTitle}`;
+            linkElement.textContent = `[${count++}] - by ${postTitle}`;
             authorLink.textContent = ` - by ${author}`;
     
             postList.append(liElement);
