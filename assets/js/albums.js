@@ -9,19 +9,18 @@ async function init(){
 }
 
 function createAlbumList(albums) {
-    const albumList = document.createElement('ul');
+    const albumList = document.createElement('div');
     albumList.classList.add('album-list');
 
     albums.forEach(album => {
-        const liElement = document.createElement('li');
+        const liElement = document.createElement('div');
         liElement.classList.add('list-item');
         liElement.textContent = `${album.title} by: ${album.user.name}. Total photos in album ${album.photos.length}`;
 
+        console.log(album);
         const photoElement = document.createElement('img');
         
-        album.photos.forEach(photo => {
-            photoElement.src = photo.url;
-        })
+        photoElement.src = album.photos[1].url;
 
         const linkElement = document.createElement('a');
         linkElement.href = '#';
