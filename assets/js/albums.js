@@ -19,7 +19,6 @@ function createAlbumList(albums) {
 
         console.log(album);
         const photoElement = document.createElement('img');
-        
         photoElement.src = album.photos[1].url;
 
         const linkElement = document.createElement('a');
