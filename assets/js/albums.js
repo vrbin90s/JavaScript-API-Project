@@ -26,7 +26,7 @@ function createAlbumList(albums) {
         })
 
         const linkElement = document.createElement('a');
-        liElement.href = '#';
+        linkElement.href = '#';
         linkElement.append(photoElement);
 
         liElement.append(linkElement);
