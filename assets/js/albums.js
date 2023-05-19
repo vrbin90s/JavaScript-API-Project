@@ -26,9 +26,10 @@ function createAlbumList(albums) {
         })
 
         const linkElement = document.createElement('a');
+        liElement.href = '#';
         linkElement.append(photoElement);
 
-        liElement.append(photoElement);
+        liElement.append(linkElement);
 
         albumList.append(liElement);
     });
