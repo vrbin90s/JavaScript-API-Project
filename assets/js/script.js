@@ -24,7 +24,7 @@ async function getUsers(userList){
             const totalPosts = data.posts.length;
             liElement.appendChild(linkElement);
             linkElement.setAttribute('href', `user.html?id=${userID}`);
-            linkElement.textContent = `${userName} (${totalPosts})`;
+            linkElement.textContent = `${userName} - [total posts ${totalPosts}]`;
             
             userList.append(liElement);
         });
@@ -34,19 +34,21 @@ async function getUsers(userList){
 }
 
 async function getPosts(postList) {
-    const posts = await fetch(`https://jsonplaceholder.typicode.com/posts?_expand=user`);
+    const posts = await fetch(`https://jsonplaceholder.typicode.com/posts?_embed=comments&_expand=user`);
     const data = await posts.json();
 
     if(postList) {
 
         let count = 1;
 
-        data.forEach(async (data) => {
+        data.forEach(async (post) => {
 
             const liElement = document.createElement('li');
             const linkElement = document.createElement('a');
-            const authorElement = document.createElement('span');
+            const authorElement = document.createElement('div');
             const authorLink = document.createElement('a');
+            const commentCount = post.comments.length;
+            const authorName = post.user.name;
  
             
             authorLink.setAttribute('href', './user.html');
@@ -56,10 +58,8 @@ async function getPosts(postList) {
             
             liElement.append(linkElement, authorElement);
            
-            const postTitle = data.title;
-            const author = data.user.name;
-            linkElement.textContent = `[${count++}] - by ${postTitle}`;
-            authorLink.textContent = ` - by ${author}`;
+            linkElement.textContent = `[${count++}] - ${post.title} - [Comments ${commentCount}]`;
+            authorLink.textContent = `Author:  ${authorName}`;
     
             postList.append(liElement);
         });
