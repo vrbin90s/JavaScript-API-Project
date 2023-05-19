@@ -10,30 +10,22 @@ init();
 async function getUsers(userList){
 
 
-    const users = await fetch(`https://jsonplaceholder.typicode.com/users`);
+    const users = await fetch(`https://jsonplaceholder.typicode.com/users?_embed=posts`);
     const data = await users.json();
 
     data.forEach(async data => {
         const liElement = document.createElement('li');
         const linkElement = document.createElement('a');
-
+        console.log(data);
         const userID = data.id;
         const userName = data.name;
-        const totalPosts = await getUserPosts(userID);
+        const totalPosts = data.posts.length;
         liElement.appendChild(linkElement);
-        linkElement.setAttribute('href', `user.html?${userID}`);
+        linkElement.setAttribute('href', `user.html?id=${userID}`);
         linkElement.textContent = `${userName} (${totalPosts})`;
         
         userList.append(liElement);
     });
     
-}
-
-async function getUserPosts(userID){
-    const posts = await fetch(`https://jsonplaceholder.typicode.com/users/${userID}/posts`);
-    const data = await posts.json();
-    const totalPosts = data.length;
-    
-    return totalPosts;
 }
 
