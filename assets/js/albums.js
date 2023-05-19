@@ -17,8 +17,6 @@ function createAlbumList(albums) {
         liElement.classList.add('list-item');
         liElement.textContent = `${album.title} by: ${album.user.name}. Total photos in album ${album.photos.length}`;
 
-        console.log(album);
-
         const photoElement = document.createElement('img');
         
         album.photos.forEach(photo => {
