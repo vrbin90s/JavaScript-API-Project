@@ -16,7 +16,7 @@ function createPostList(posts) {
   
 
         const liElement = document.createElement('li');
-        liElement.classList.add('post-list');
+        liElement.classList.add('list-item');
 
         const linkElement = document.createElement('a');
         linkElement.textContent = `${ post.title } - [Comments: ${ post.comments.length }]`;
