@@ -47,16 +47,15 @@ async function getPosts(postList) {
             const linkElement = document.createElement('a');
             const authorElement = document.createElement('div');
             const authorLink = document.createElement('a');
-            const commentCount = post.comments.length;
-            const authorName = post.user.name;
- 
-            
+
             authorLink.setAttribute('href', './user.html');
             linkElement.setAttribute('href', './post.html');
             authorElement.appendChild(authorLink);
-            authorElement.classList.add('author');
-            
+            authorElement.classList.add('author');          
             liElement.append(linkElement, authorElement);
+
+            const commentCount = post.comments.length;
+            const authorName = post.user.name;
            
             linkElement.textContent = `[${count++}] - ${post.title} - [Comments ${commentCount}]`;
             authorLink.textContent = `Author:  ${authorName}`;
