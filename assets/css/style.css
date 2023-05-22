@@ -63,3 +63,31 @@ table {
     text-align: center;
     white-space: nowrap;
 }
+
+.user-posts li a,
+.user-albums li a {
+    text-decoration: none;
+    color: #28282D;
+}
+
+.user-posts li, 
+.user-albums li{
+    border: 1px solid #28282D;
+    padding: 5px;
+    transition: all .3s;
+}
+
+.user-posts li:not(:last-child),
+.user-albums li:not(:last-child) {
+    border-bottom: none;
+}
+
+.user-posts li:hover, 
+.user-albums li:hover {
+    background-color: #28282D;
+}
+
+.user-posts li:hover a,
+.user-albums li:hover a  {
+    color: #fff;
+}

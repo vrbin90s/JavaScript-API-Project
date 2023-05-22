@@ -19,9 +19,6 @@ async function init(){
         contentElement.append(errorMessage, usersLink);
     }
 
-
-    
-
 }
 
 function createUser(user){
@@ -63,6 +60,9 @@ function createUser(user){
 
     if(user.posts) {
         const postList = document.createElement('ul');
+        postList.classList.add('user-posts');
+        const titleElement = document.createElement('h3');
+        titleElement.textContent = 'User Posts:'
 
         user.posts.forEach(post => {
             const liElement = document.createElement('li');
@@ -73,11 +73,14 @@ function createUser(user){
             postList.append(liElement);
         });
 
-        userWrapper.append(postList);
+        userWrapper.append(titleElement, postList);
     }
 
     if(user.albums) {
         const albumList = document.createElement('ul');
+        albumList.classList.add('user-albums');
+        const titleElement = document.createElement('h3');
+        titleElement.textContent = 'User albums:'
 
         user.albums.forEach(album => {
             const liElement = document.createElement('li');
@@ -90,7 +93,7 @@ function createUser(user){
             
         });
 
-        userWrapper.append(albumList);
+        userWrapper.append(titleElement, albumList);
     }
 
     return userWrapper;
