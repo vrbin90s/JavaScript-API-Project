@@ -1,30 +1,55 @@
 function init(){
     
-    const navLinks = document.querySelectorAll('.nav-link');
-    const activeClass = 'active';
+    const headerElement = document.querySelector('.header');
+    const navigation = document.createElement('nav');
+    navigation.classList.add('navigation');
 
-    navLinks.forEach(link => {
-
-        link.addEventListener('click', () => {
-          
-            localStorage.setItem('activeLink', link.getAttribute('href'));
-
-        });
-
-        window.onload = () => {
-
-            const storedActiveLink = localStorage.getItem('activeLink');
-            if(storedActiveLink) {
-                
-                const activeLink = document.querySelector(`.nav-link[href="${storedActiveLink}"]`);
-                if(activeLink) {
-                    activeLink.classList.add(activeClass);
-                }
-            }
+    const menuLinks = [
+        {
+            name: 'users',
+            url: 'users.html'
+        },
+        {
+            name: 'posts',
+            url: 'posts.html'
+        },
+        {
+            name: 'albums',
+            url: 'albums.html'
         }
 
+    ];
+
+    headerElement.append(navigation);
+    navigation.append(createMenuItems(menuLinks));
+
+}
+
+function createMenuItems(menuLinks){
+    const menuList = document.createElement('ul');
+    menuList.classList.add('menu-list');
+
+    menuLinks.forEach(link => {
+        const menuItem = document.createElement('li');
+        menuItem.classList.add('menu-item');
+
+        const linkItem = document.createElement('a');
+        linkItem.classList.add('menu-link');
+        linkItem.textContent = link.name;
+        linkItem.href = link.url;
+
+        menuItem.append(linkItem);
+        menuList.append(menuItem);
+        
+        const currentUrl = window.location.href;
+ 
+        if(currentUrl.includes(link.url)) {
+            linkItem.classList.add('active');
+        }
+    
     });
 
+    return menuList;
 }
 
 init();

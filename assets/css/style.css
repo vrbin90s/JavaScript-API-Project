@@ -1,3 +1,65 @@
-.active {
-    color: red;
+* {
+    box-sizing: border-box;
+}
+
+ul {
+    padding: 0
+}
+
+.header {
+    width: 100%;
+    display: flex;
+}
+.menu-list {
+    list-style: none;
+}
+
+.menu-item:not(:first-child) {
+    margin-left: 10px;
+    
+}
+
+.menu-item {
+    display: inline-block;
+}
+
+.menu-link {
+    text-decoration: none;
+    color: #28282D;
+    border: 1px solid #28282D;
+    padding: 10px 30px;
+    transition: all .3s ease-in-out;
+}
+
+.menu-link:hover,
+.menu-link.active {
+    background-color: #28282D;
+    color: #fff;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    word-wrap: break-word;
+}
+
+th:last-child,
+td:last-child {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+}
+
+.album-image {
+    width: 50%;
+    height: auto;
+}
+
+.image-cell {
+    width: 30%;
+    text-align: center;
+    white-space: nowrap;
 }

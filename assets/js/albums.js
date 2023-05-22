@@ -3,34 +3,58 @@ async function init(){
     const albumData = await albums.json();
 
     const contentElement = document.querySelector('#content');
-    const userListelement = createAlbumList(albumData);
-    contentElement.append(userListelement);
+    const albumTable = createAlbumList(albumData);
+    contentElement.append(albumTable);
 
 }
 
 function createAlbumList(albums) {
-    const albumList = document.createElement('div');
-    albumList.classList.add('album-list');
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    const headingRow = document.createElement('tr');
+
+    const headings = ['Albums', 'Thumbnail', 'Total Photos'];
+
+    headings.forEach((heading) => {
+        const headingCell = document.createElement('th');
+        headingCell.textContent = heading;
+        headingRow.append(headingCell);
+        thead.append(headingRow);
+        
+    })
 
     albums.forEach(album => {
-        const liElement = document.createElement('div');
-        liElement.classList.add('list-item');
-        liElement.textContent = `${album.title} by: ${album.user.name}. Total photos in album ${album.photos.length}`;
+        const row = document.createElement('tr');
+        const albumCell = document.createElement('td');
+        const photoCell = document.createElement('td');
+        const imageCell = document.createElement('td');
 
-        console.log(album);
+        imageCell.classList.add('image-cell');
+
+
         const photoElement = document.createElement('img');
+        photoElement.classList.add('album-image');
         photoElement.src = album.photos[1].url;
 
         const linkElement = document.createElement('a');
+        linkElement.textContent = album.title;
         linkElement.href = '#';
-        linkElement.append(photoElement);
 
-        liElement.append(linkElement);
+        albumCell.append(linkElement);
+        photoCell.textContent = album.photos.length;
+        imageCell.append(photoElement);
 
-        albumList.append(liElement);
+        row.append(albumCell, imageCell, photoCell);
+        tbody.append(row);
     });
 
-    return albumList;
+
+    table.append(thead, tbody);
+
+    return table;
 
 }
 

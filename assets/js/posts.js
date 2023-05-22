@@ -3,40 +3,55 @@ async function init(){
     const postData = await posts.json();
 
     const contentElement = document.querySelector('#content');
-    const userListelement = createPostList(postData);
-    contentElement.append(userListelement);
+    const postTable = createPostList(postData);
+    contentElement.append(postTable);
 }
 
 function createPostList(posts) {
 
-    const postList = document.createElement('ul');
-    postList.classList.add('users-list');
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    const headingRow = document.createElement('tr');
+    
+    const headings = ['Posts', 'Author', 'Comments'];
+
+    headings.forEach((heading) => {
+        const headingCell = document.createElement('th');
+        headingCell.textContent = heading;
+        headingRow.append(headingCell);
+        thead.append(headingRow);
+        
+    })
+
 
     posts.forEach((post) => {
   
+        const row = document.createElement('tr');
+        const titleCell = document.createElement('td');
+        const authorCell = document.createElement('td');
+        const commentsCell = document.createElement('td');
 
-        const liElement = document.createElement('li');
-        liElement.classList.add('list-item');
+        const titleElement = document.createElement('a');
+        titleElement.textContent = post.title;
+        titleElement.href = `./post.html`;
 
-        const linkElement = document.createElement('a');
-        linkElement.textContent = `${ post.title } - [Comments: ${ post.comments.length }]`;
-        linkElement.href = `./post.html`;
+        const authorElement = document.createElement('a');
+        authorElement.textContent = `Author:  ${ post.user.name }`;
+        authorElement.href = `./user.html`;
 
-        const authorElement = document.createElement('div');
-        authorElement.classList.add('post-author');
+        titleCell.append(titleElement);
+        authorCell.append(authorElement);
+        commentsCell.textContent = post.comments.length;
 
-        const authorLink = document.createElement('a');
-        authorLink.textContent = `Author:  ${ post.user.name }`;
-        authorLink.href = `./user.html`;
-
-        authorElement.append(authorLink);
-
-        liElement.append(linkElement, authorElement);
-
-        postList.append(liElement);
+        row.append(titleCell, authorCell, commentsCell);
+        tbody.append(row);
     });
 
-    return postList;
+    table.append(thead, tbody);
+
+    return table;
 
 }
 
