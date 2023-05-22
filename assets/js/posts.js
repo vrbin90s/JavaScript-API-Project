@@ -35,11 +35,11 @@ function createPostList(posts) {
 
         const titleElement = document.createElement('a');
         titleElement.textContent = post.title;
-        titleElement.href = `./post.html`;
+        titleElement.href = `./post.html?id=${post.id}`;
 
         const authorElement = document.createElement('a');
         authorElement.textContent = `Author:  ${ post.user.name }`;
-        authorElement.href = `./user.html`;
+        authorElement.href = `./user.html?id=${post.user.id}`;
 
         titleCell.append(titleElement);
         authorCell.append(authorElement);

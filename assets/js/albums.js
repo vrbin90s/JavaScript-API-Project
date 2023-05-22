@@ -41,7 +41,7 @@ function createAlbumList(albums) {
 
         const linkElement = document.createElement('a');
         linkElement.textContent = album.title;
-        linkElement.href = '#';
+        linkElement.href = `./album.html?id=${album.id}`;
 
         albumCell.append(linkElement);
         photoCell.textContent = album.photos.length;
