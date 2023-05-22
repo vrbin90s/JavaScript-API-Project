@@ -4,10 +4,21 @@ async function init(){
 
     const users = await fetch(`https://jsonplaceholder.typicode.com/users/${id}/?_embed=posts&_embed=albums`);
     const userData = await users.json();
-    console.log(userData);
+
     const contentElement = document.querySelector('#content');
-    const userElement = createUser(userData);
-    contentElement.append(userElement);
+
+    if(id) {
+        const userElement = createUser(userData);
+        contentElement.append(userElement);
+    } else {
+        const errorMessage = document.createElement('p');
+        errorMessage.textContent = `User not found`;
+        const usersLink = document.createElement('a');
+        usersLink.href = './users.html';
+        usersLink.textContent = 'Back to user list';
+        contentElement.append(errorMessage, usersLink);
+    }
+
 
     
 
@@ -48,31 +59,39 @@ function createUser(user){
     website.append(websiteLink);
     userDataList.append(name, userName, email, address, phone, website, company);
     
-    const postList = document.createElement('ul');
+    userWrapper.append(userDataList);
 
-    user.posts.forEach(post => {
-        const liElement = document.createElement('li');
-        const postLink = document.createElement('a');
-        postLink.textContent = post.title;
-        postLink.href = `./post.html?id=${post.id}`;
-        liElement.append(postLink);
-        postList.append(liElement);
-    });
+    if(user.posts) {
+        const postList = document.createElement('ul');
 
-    const albumList = document.createElement('ul');
+        user.posts.forEach(post => {
+            const liElement = document.createElement('li');
+            const postLink = document.createElement('a');
+            postLink.textContent = post.title;
+            postLink.href = `./post.html?id=${post.id}`;
+            liElement.append(postLink);
+            postList.append(liElement);
+        });
 
-    user.albums.forEach(album => {
-        const liElement = document.createElement('li');
-        const albumLink = document.createElement('a');
-        albumLink.textContent = album.title;
-        albumLink.href = `./album.html?id=${album.id}`;
+        userWrapper.append(postList);
+    }
 
-        liElement.append(albumLink);
-        albumList.append(liElement);
-    });
+    if(user.albums) {
+        const albumList = document.createElement('ul');
 
-    userWrapper.append(userDataList, postList, albumList);
+        user.albums.forEach(album => {
+            const liElement = document.createElement('li');
+            const albumLink = document.createElement('a');
+            albumLink.textContent = album.title;
+            albumLink.href = `./album.html?id=${album.id}`;
+    
+            liElement.append(albumLink);
+            albumList.append(liElement);
+            
+        });
 
+        userWrapper.append(albumList);
+    }
 
     return userWrapper;
 }
