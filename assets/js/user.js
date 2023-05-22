@@ -62,7 +62,7 @@ function createUser(user){
         const postList = document.createElement('ul');
         postList.classList.add('user-posts');
         const titleElement = document.createElement('h3');
-        titleElement.textContent = 'User Posts:'
+        titleElement.textContent = `User Posts (${user.posts.length}):`;
 
         user.posts.forEach(post => {
             const liElement = document.createElement('li');
@@ -80,7 +80,7 @@ function createUser(user){
         const albumList = document.createElement('ul');
         albumList.classList.add('user-albums');
         const titleElement = document.createElement('h3');
-        titleElement.textContent = 'User albums:'
+        titleElement.textContent = `User albums (${user.albums.length}):`;
 
         user.albums.forEach(album => {
             const liElement = document.createElement('li');

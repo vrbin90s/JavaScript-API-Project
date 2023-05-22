@@ -1,48 +1,67 @@
-// async function init(){
-//     const urlParams = new URLSearchParams(window.location.search);
-//     const id = urlParams.get('id');
+async function init(){
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
 
-//     const users = await fetch(`https://jsonplaceholder.typicode.com/posts?&_expand=user/${id}`);
-//     const postData = await users.json();
+    const users = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}/?_embed=comments&_expand=user`);
+    const postData = await users.json();
+    console.log(postData);
+    const contentElement = document.querySelector('#content');
 
-//     const contentElement = document.querySelector('#content');
-//     const userElement = createUser(postData);
-//     contentElement.append(userElement);
+    if(id) {
+        const postElement = createUser(postData);
+        contentElement.append(postElement);
+    } else {
+        const errorMessage = document.createElement('p');
+        errorMessage.textContent = `Post not found`;
+        const usersLink = document.createElement('a');
+        usersLink.href = './posts.html';
+        usersLink.textContent = 'Back to post page';
+        contentElement.append(errorMessage, usersLink);
+    }
 
-// }
+}   
 
-// function createUser(user){
-//     const userWrapper = document.createElement('div');
-//     userWrapper.classList.add('post-wrapper');
+function createUser(post){
+    const postElement = document.createElement('article');
+    postElement.classList.add('post');
+    const title = document.createElement('h3');
+    const body = document.createElement('p');
+    const author = document.createElement('div');
+    const authorLink = document.createElement('a');
+    const authorSpan = document.createElement('span');
+    const morePostsFromAuthorLink = document.createElement('a');
+    morePostsFromAuthorLink.textContent = 'More Posts From this Author';
+    morePostsFromAuthorLink.href = `./posts.html?id=${post.user.id}`;
+
+    authorLink.href = (`./user.html?id=${post.id}`);
+    const commentList = document.createElement('div');
+    commentList.classList.add('post-comments-wrapper');
     
-   
-//     const nameElement = document.createElement('li');
-//     const userNameElement = document.createElement('li');
-//     const emailElement = document.createElement('li');
-//     const addressElement = document.createElement('li');
-
-//     nameElement.textContent = `Name: ${user.name}`;
-//     userNameElement.textContent = `Username: ${user.username}`;
-//     emailElement.textContent = `Email: ${user.email}`;
-//     addressElement.textContent = `${user.name}`;
-
-//     const postList = document.createElement('ul');
-
-//     user.posts.forEach(post => {
-//         const liElement = document.createElement('li');
-//         const postLink = document.createElement('a');
-//         postLink.textContent = post.title;
-//         postLink.href = `./post.html?id=${post.id}`;
-//         liElement.append(postLink);
-//         postList.append(liElement);
-//     });
-
-//     userDataList.append(nameElement, userNameElement, emailElement, addressElement, postList);
+    title.textContent = post.title;
+    authorSpan.textContent = `Author: `;
+    body.textContent = post.body;
+    authorLink.textContent = post.user.name;
     
 
-//     userWrapper.append(userDataList);
+    if(post.comments) {
+        post.comments.forEach(comment => {
+            const title = document.createElement('h4');
+            const body = document.createElement('p');
+            const email = document.createElement('small');
+            console.log(comment);
+            title.textContent = comment.name;
+            body.textContent = comment.body;
+            email.textContent = `User email: ${comment.email}`;
+            commentList.append(title, body, email);
+        });
+    }
+ 
+    author.append(authorSpan, authorLink);
+    postElement.append(title, author, body, commentList, morePostsFromAuthorLink);
 
-//     return userWrapper;
-// }
+    return postElement;
+}
 
-// init();
+init();
+
+console.log('veikia');

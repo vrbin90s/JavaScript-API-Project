@@ -1,10 +1,20 @@
 async function init(){
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
     const posts = await fetch(`https://jsonplaceholder.typicode.com/posts?_embed=comments&_expand=user`);
     const postData = await posts.json();
+    
+    if(!id) {
+        const contentElement = document.querySelector('#content');
+        const postTable = createPostList(postData);
+        contentElement.append(postTable);
+    } else {
+        showAuthorPosts(postData, id);
+    }
 
-    const contentElement = document.querySelector('#content');
-    const postTable = createPostList(postData);
-    contentElement.append(postTable);
+
+    
 }
 
 function createPostList(posts) {
@@ -53,6 +63,13 @@ function createPostList(posts) {
 
     return table;
 
+}
+
+function showAuthorPosts(posts, id) {
+    const filteredPosts = posts.filter(post => post.user.id === parseInt(id));
+    const contentElement = document.querySelector('#content');
+    const postTable = createPostList(filteredPosts);
+    contentElement.append(postTable);
 }
 
 init();
