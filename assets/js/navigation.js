@@ -7,15 +7,15 @@ function init(){
     const menuLinks = [
         {
             name: 'users',
-            url: 'users.html'
+            url: './users.html'
         },
         {
             name: 'posts',
-            url: 'posts.html'
+            url: './posts.html'
         },
         {
             name: 'albums',
-            url: 'albums.html'
+            url: './albums.html'
         }
 
     ];
@@ -43,7 +43,7 @@ function createMenuItems(menuLinks){
         
         const currentUrl = window.location.href;
  
-        if(currentUrl.includes(link.url)) {
+        if(currentUrl === linkItem.href) {
             linkItem.classList.add('active');
         }
     
