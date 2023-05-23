@@ -25,7 +25,7 @@ async function init(){
     }
 
     lightGallery(document.getElementById('light-gallery'), {
-        thumbnail:true
+        thumbnail: true
     });
 
 }   
@@ -39,10 +39,6 @@ function createAlbum(album){
     const body = document.createElement('p');
     const author = document.createElement('div');
     const authorLink = document.createElement('a');
-    const authorSpan = document.createElement('span');
-    const morePostsFromAuthorLink = document.createElement('a');
-    morePostsFromAuthorLink.innerHTML = 'More albums from this Author &rarr;';
-    morePostsFromAuthorLink.href = `./albums.html?id=${album.user.id}`;
 
     const lightGallery = document.createElement('div');
     lightGallery.id = 'light-gallery';
@@ -64,12 +60,11 @@ function createAlbum(album){
     authorLink.href = (`./user.html?id=${album.user.id}`);
     
     title.textContent = album.title;
-    authorSpan.textContent = `by: `;
     body.textContent = album.body;
-    authorLink.textContent = album.user.name;
+    authorLink.textContent = `by: ${album.user.name}`;
     
  
-    author.append(authorSpan, authorLink);
+    author.append(authorLink);
     innerAlbumWrapper.append(title, author, body);
     albumElement.append(innerAlbumWrapper, lightGallery);
     return albumElement;
