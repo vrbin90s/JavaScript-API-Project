@@ -2,6 +2,11 @@ function init(){
     
     const headerElement = document.querySelector('.header');
     const navigation = document.createElement('nav');
+    const mobileNavToggle = document.createElement('button');
+    mobileNavToggle.classList.add('mobile-nav-toggle');
+    mobileNavToggle.setAttribute('aria-control', 'primary-navigation');
+    mobileNavToggle.ariaExpanded = false;
+
     const logo = document.createElement('img');
     logo.src = './assets/images/api.png';
     const logoLink = document.createElement('a');
@@ -9,6 +14,9 @@ function init(){
     logoLink.append(logo);
 
     navigation.classList.add('navigation');
+
+
+
 
     const menuLinks = [
         {
@@ -26,14 +34,47 @@ function init(){
 
     ];
 
-    headerElement.append(logoLink, navigation);
+ 
+
+
+    mobileNavToggle.addEventListener('click', () => {
+        const primaryNav = navigation.querySelector('.primary-navigation');
+        const visibility = primaryNav.getAttribute('data-visable');
+        
+        if(visibility === 'false') {
+            primaryNav.setAttribute('data-visable', true);
+            mobileNavToggle.ariaExpanded = true;
+        } else if (visibility === 'true') {
+            primaryNav.setAttribute('data-visable', false);
+            mobileNavToggle.ariaExpanded = false;
+        }
+
+        console.log(visibility);
+    });
+
+    const searchForm = document.createElement('form');
+    const searchInput = document.createElement('input');
+    searchInput.name = 'search-input';
+    searchInput.id = 'search-input';
+    searchForm.append(searchInput);
+
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const form = event.target;
+        window.location.href = './search.html';
+
+    });
+
+    headerElement.append(logoLink, searchForm ,navigation, mobileNavToggle);
     navigation.append(createMenuItems(menuLinks));
 
 }
 
 function createMenuItems(menuLinks){
     const menuList = document.createElement('ul');
-    menuList.classList.add('menu-list');
+    menuList.classList.add('primary-navigation');
+    menuList.setAttribute('data-visable', false);
 
     menuLinks.forEach(link => {
         const menuItem = document.createElement('li');

@@ -25,7 +25,8 @@ async function init(){
     }
 
     lightGallery(document.getElementById('light-gallery'), {
-        thumbnail: true
+        thumbnail: true,
+        width: '100%'
     });
 
 }   

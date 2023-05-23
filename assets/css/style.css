@@ -28,9 +28,10 @@ ul {
 }
 
 
-
+/* HEADER */
 
 .header {
+    position: relative;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -38,17 +39,34 @@ ul {
     padding: 3rem;
     font-size: 1.4rem;
 }
-.menu-list {
+
+/* NAVIGATION */
+
+/* .hamburger {
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translatey(-50%);
+    border: none;
+    outline: none;
+} */
+
+.primary-navigation {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.menu-item:not(:first-child) {
-    margin-left: 1rem;
-    
+.mobile-nav-toggle {
+    display: none;
 }
 
 .menu-item {
     display: inline-block;
+}
+
+.menu-item:not(:last-child) {
+    margin-right: 1rem;
 }
 
 .menu-link {
@@ -84,7 +102,6 @@ ul {
     grid-template-rows: min-content 1fr 1fr;
     align-items: middle;
     row-gap: 2rem;
-    
 }
 
 .post-card a {
@@ -298,9 +315,8 @@ table {
     display: flex;
     align-items: center;
 }
+
 /* ALBUMS */
-
-
 
 .album-wrapper {
     grid-column: center-start / center-end;
@@ -387,13 +403,11 @@ table {
     transition: all .3s ease-in-out;
 }
 
-#light-gallery a {
-    position: relative;
-}
-
-#light-gallery img {
-    width: 25%;
-    height: auto;
+#light-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 4rem;
 }
 
 /* USER */
@@ -416,7 +430,34 @@ table {
 
 
 
-/* Page */
+/* PAGES */
+
+.home-page {
+    grid-column: center-start / center-end;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+.home-title {
+    text-align: center;
+}
+
+lottie-player {
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+}
+
+
+.home-intro-text {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.6rem;
+    text-align: center;
+}
 
 .banner {
     grid-column: center-start / center-end;
@@ -439,14 +480,89 @@ table {
     }
   }
 
+  /* RESPONSIVE */
 
 @media only screen and (max-width: 784px) {
+    
+    .primary-navigation {
+        width: 100%;
+        position: fixed;
+        inset: 0 0 0 30%;
+        background: hsl(0 0% 100% / .8);
+        backdrop-filter: blur(1rem);
+        flex-direction: column;
+        z-index: 1000;
+        display: flex;
+        padding: min(30vh, 10rem) 2em;
+        transition: transform .3s ease-out;
+        transform: translateX(100%);
+    }
+
+    .primary-navigation[data-visable="true"] {
+        transform: translateX(0);
+    }
+
+    .mobile-nav-toggle {
+        display: block;
+        position: absolute;
+        background: url('../images/icon-hamburger.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+        border: 0;
+        width: 3rem;
+        aspect-ratio: 1;
+        top: 4.6rem;
+        right: 2rem;
+        z-index: 9999;
+        transition: background .3s ease-in;
+        cursor: pointer;
+    }
+
+    .mobile-nav-toggle[aria-expanded="true"] {
+        background: url('../images/close.png');
+        background-size: contain;
+    }
+
+    .menu-item {
+        width: 68%;
+        /* display: block; */
+        position: relative;
+        display: flex;
+        
+    }
+
+    .menu-item:not(:first-child) {
+        margin-left: 0;
+    }
+
+    .menu-link  {
+        flex: 1;
+        border: none;
+        padding: 10px 0;
+        padding-left: 2rem;
+        box-sizing: border-box;
+        
+    }
+
+    .menu-link::first-letter {
+        text-transform: capitalize;
+    }
+
     .posts-wrapper {
         grid-template-columns: 1fr;
     }
 
+    .home-page {
+        height: 70vh;
+    }
+
     .album-wrapper {
         grid-template-columns: 1fr;
+    }
+
+    lottie-player {
+        max-height: 25rem;
+        max-width: 25rem;
     }
 
 
