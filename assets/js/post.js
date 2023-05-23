@@ -24,44 +24,55 @@ async function init(){
 function createUser(post){
     const postElement = document.createElement('article');
     postElement.classList.add('post');
+    const innerPostWrapper = document.createElement('div');
+    innerPostWrapper.classList.add('inner-post-wrapper');
     const title = document.createElement('h3');
     const body = document.createElement('p');
     const author = document.createElement('div');
     const authorLink = document.createElement('a');
     const authorSpan = document.createElement('span');
     const morePostsFromAuthorLink = document.createElement('a');
-    morePostsFromAuthorLink.textContent = 'More Posts From this Author';
+    morePostsFromAuthorLink.innerHTML = 'More posts from this Author 	&rarr;';
     morePostsFromAuthorLink.href = `./posts.html?id=${post.user.id}`;
 
     authorLink.href = (`./user.html?id=${post.id}`);
     const commentList = document.createElement('div');
-    commentList.classList.add('post-comments-wrapper');
+    commentList.classList.add('comments-container');
     
     title.textContent = post.title;
-    authorSpan.textContent = `Author: `;
+    authorSpan.textContent = `by: `;
     body.textContent = post.body;
     authorLink.textContent = post.user.name;
     
+    const heading = document.createElement('h4');
+    
 
     if(post.comments) {
+        commentList.prepend(heading);
         post.comments.forEach(comment => {
+            
+            const wrapper = document.createElement('div');
+            const titleWrapper = document.createElement('div');
+            titleWrapper.classList.add('title-wrapper');
             const title = document.createElement('h4');
             const body = document.createElement('p');
             const email = document.createElement('small');
-            console.log(comment);
+            
+            heading.textContent = 'Comments';
+            wrapper.classList.add('comment-wrapper');
             title.textContent = comment.name;
             body.textContent = comment.body;
             email.textContent = `User email: ${comment.email}`;
-            commentList.append(title, body, email);
+            titleWrapper.append(title);
+            wrapper.append(titleWrapper, body, email);
+            commentList.append(wrapper);
         });
     }
  
     author.append(authorSpan, authorLink);
-    postElement.append(title, author, body, commentList, morePostsFromAuthorLink);
-
+    innerPostWrapper.append(title, author, body, morePostsFromAuthorLink);
+    postElement.append(innerPostWrapper, commentList);
     return postElement;
 }
 
 init();
-
-console.log('veikia');

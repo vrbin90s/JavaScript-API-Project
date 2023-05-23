@@ -2,46 +2,38 @@ async function init(){
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
 
-    const posts = await fetch(`https://jsonplaceholder.typicode.com/posts?_embed=comments&_expand=user`);
+    const apiUrl = `https://jsonplaceholder.typicode.com/`;
+    const apiQuery = `posts${id ? '?userId=' + id + '&' : '?' }_embed=comments&_expand=user`;
+    const posts = await fetch(apiUrl + apiQuery);
     const postData = await posts.json();
     
-    if(!id) {
-        const contentElement = document.querySelector('#content');
-        const postTable = createPostList(postData);
-        contentElement.append(postTable);
-    } else {
-        showAuthorPosts(postData, id);
-    }
+    const contentElement = document.querySelector('#content');
+    
+    const banner = document.querySelector('.banner');
+    banner.classList.add('page-title');
 
+    const pageTitle = document.createElement('h1');
+    pageTitle.textContent = 'Posts';
+    banner.append(pageTitle);
 
+    const postCards = createPostList(postData);
+    contentElement.append(banner, postCards);
     
 }
 
 function createPostList(posts) {
 
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-
-    const headingRow = document.createElement('tr');
-    
-    const headings = ['Posts', 'Author', 'Comments'];
-
-    headings.forEach((heading) => {
-        const headingCell = document.createElement('th');
-        headingCell.textContent = heading;
-        headingRow.append(headingCell);
-        thead.append(headingRow);
-        
-    })
+    const postsWrapper = document.createElement('div');
+    postsWrapper.classList.add('posts-wrapper');
 
 
     posts.forEach((post) => {
   
-        const row = document.createElement('tr');
-        const titleCell = document.createElement('td');
-        const authorCell = document.createElement('td');
-        const commentsCell = document.createElement('td');
+        const postCard = document.createElement('div');
+        postCard.classList.add('post-card');
+        const title = document.createElement('h4');
+        const author = document.createElement('h6');
+        const comments = document.createElement('small');
 
         const titleElement = document.createElement('a');
         titleElement.textContent = post.title;
@@ -51,25 +43,16 @@ function createPostList(posts) {
         authorElement.textContent = `Author:  ${ post.user.name }`;
         authorElement.href = `./user.html?id=${post.user.id}`;
 
-        titleCell.append(titleElement);
-        authorCell.append(authorElement);
-        commentsCell.textContent = post.comments.length;
+        title.append(titleElement);
+        author.append(authorElement);
+        comments.textContent = `Comments: ${post.comments.length}`;
 
-        row.append(titleCell, authorCell, commentsCell);
-        tbody.append(row);
+        postCard.append(title, author, comments);
+        postsWrapper.append(postCard);
     });
 
-    table.append(thead, tbody);
+    return postsWrapper;
 
-    return table;
-
-}
-
-function showAuthorPosts(posts, id) {
-    const filteredPosts = posts.filter(post => post.user.id === parseInt(id));
-    const contentElement = document.querySelector('#content');
-    const postTable = createPostList(filteredPosts);
-    contentElement.append(postTable);
 }
 
 init();

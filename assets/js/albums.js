@@ -2,59 +2,65 @@ async function init(){
     const albums = await fetch(`https://jsonplaceholder.typicode.com/albums?_embed=photos&_expand=user`);
     const albumData = await albums.json();
 
+    const banner = document.querySelector('.banner');
+    banner.classList.add('page-title');
+    const pageTitle = document.createElement('h1');
+    pageTitle.textContent = 'Albums';
+    banner.append(pageTitle);
+
     const contentElement = document.querySelector('#content');
-    const albumTable = createAlbumList(albumData);
-    contentElement.append(albumTable);
+    const albumCards = createAlbumList(albumData);
+    contentElement.append(banner, albumCards);
 
 }
 
+
+
 function createAlbumList(albums) {
 
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
+    const albumWrapper = document.createElement('div');
+    albumWrapper.classList.add('album-wrapper');
 
-    const headingRow = document.createElement('tr');
-
-    const headings = ['Albums', 'Thumbnail', 'Total Photos'];
-
-    headings.forEach((heading) => {
-        const headingCell = document.createElement('th');
-        headingCell.textContent = heading;
-        headingRow.append(headingCell);
-        thead.append(headingRow);
-        
-    })
 
     albums.forEach(album => {
-        const row = document.createElement('tr');
-        const albumCell = document.createElement('td');
-        const photoCell = document.createElement('td');
-        const imageCell = document.createElement('td');
 
-        imageCell.classList.add('image-cell');
+        const albumCard = document.createElement('div');
+        albumCard.classList.add('album-card');
+        const cardHeader = document.createElement('div');
+        cardHeader.classList.add('album-card-header');
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('album-card-body');
+        const title = document.createElement('h4');
+        title.textContent = album.title;
+        
+        const author = document.createElement('span');
+        author.textContent = album.user.name;
 
-
+        const authorLink = document.createElement('a');
+        authorLink.textContent = `by: `;
+        authorLink.href = `./user.html?id=${album.user.id}`;
+        authorLink.append(author);
+        
+        const photoCountElement = document.createElement('small');
+        photoCountElement.classList.add('album-image-count');
+        photoCountElement.textContent = `Total photos: ${album.photos.length}`;
+        
         const photoElement = document.createElement('img');
-        photoElement.classList.add('album-image');
+        photoElement.classList.add('album-thumbnail');
         photoElement.src = album.photos[1].url;
 
-        const linkElement = document.createElement('a');
-        linkElement.textContent = album.title;
-        linkElement.href = `./album.html?id=${album.id}`;
-
-        albumCell.append(linkElement);
-        photoCell.textContent = album.photos.length;
-        imageCell.append(photoElement);
-
-        row.append(albumCell, imageCell, photoCell);
-        tbody.append(row);
+        const imageLink = document.createElement('a');
+        imageLink.classList.add('image-link');
+        imageLink.href = `./album.html?id=${album.id}`;
+        imageLink.append(photoElement);
+        
+        cardHeader.append(imageLink);
+        cardBody.append(title, authorLink, photoCountElement);
+        albumCard.append(cardHeader, cardBody);
+        albumWrapper.append(albumCard);
     });
 
-
-    table.append(thead, tbody);
-
-    return table;
+    return albumWrapper;
 
 }
 

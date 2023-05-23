@@ -5,11 +5,18 @@ async function init(){
     const users = await fetch(`https://jsonplaceholder.typicode.com/users/${id}/?_embed=posts&_embed=albums`);
     const userData = await users.json();
 
+    const banner = document.querySelector('.banner');
+    banner.classList.add('page-title');
+
+    const pageTitle = document.createElement('h1');
+    pageTitle.textContent = 'User Info';
+    banner.append(pageTitle);
+
     const contentElement = document.querySelector('#content');
 
     if(id) {
         const userElement = createUser(userData);
-        contentElement.append(userElement);
+        contentElement.append(banner, userElement);
     } else {
         const errorMessage = document.createElement('p');
         errorMessage.textContent = `User not found`;
@@ -24,50 +31,59 @@ async function init(){
 function createUser(user){
     const userWrapper = document.createElement('div');
     userWrapper.classList.add('user-wrapper');
-    const userDataList = document.createElement('ul');
-    userDataList.classList.add('user-data-list');
+    const userTable = document.createElement('table');
+    userTable.classList.add('user-table');
 
-   
-    const name = document.createElement('li');
-    const userName = document.createElement('li');
-    const email = document.createElement('li');
-    const address = document.createElement('li');
-    const phone = document.createElement('li');
-    const website = document.createElement('li');
-    const company = document.createElement('li');
-    const googleMapsLink = document.createElement('a');
-    const websiteLink = document.createElement('a');
+    const createRow = (headingText , bodyElement) => {
+        const row = document.createElement('tr');
 
+        const heading = document.createElement('th');
+        heading.textContent = headingText;
+        row.append(heading);
 
-    name.textContent = `Name: ${user.name}`;
-    userName.textContent = `Username: ${user.username}`;
-    email.textContent = `Email: ${user.email}`;
-    googleMapsLink.textContent = `${user.address.street},  ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}`;
-    googleMapsLink.href = `https://www.google.com/maps?q=${user.address.geo.lat},${user.address.geo.lng}`;
-    googleMapsLink.target = `_blank`;
-    phone.textContent = `Phone: ${user.phone}`;
-    websiteLink.textContent = user.website;
-    websiteLink.href = user.website;
-    company.textContent = `Company: ${user.company.name}`;
-    website.innerHTML = `<span>Website:</span> `;
-    address.innerHTML = `<span>Adress:</span> `
-    
-    address.append(googleMapsLink);
-    website.append(websiteLink);
-    userDataList.append(name, userName, email, address, phone, website, company);
-    
-    userWrapper.append(userDataList);
+        const body = document.createElement('td');
+        body.append(bodyElement);
+        row.append(body);
+
+        return row;
+    }
+
+    const phoneLink = document.createElement('a');
+    phoneLink.href = `tel:${user.phone}`;
+    phoneLink.textContent = user.phone;
+
+    const addressLink = document.createElement('a')
+    addressLink.href = `https://www.google.com/maps?q=${user.address.geo.lat},${user.address.geo.lng}`;
+    addressLink.target = '_blank';
+    addressLink.textContent = `${user.address.street},  ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}`;
+
+    const webLink = document.createElement('a');
+    webLink.href = `https://${user.website}`;
+    webLink.textContent = user.website;
+
+    const nameRow = createRow('User', user.name);
+    const userNameRow = createRow('Username', user.username);
+    const emailRow = createRow('Email', user.email);
+    const addressRow = createRow('Address', addressLink);
+    const phoneRow = createRow('Phone', phoneLink);
+    const webRow = createRow('Website', webLink);
+    const companyRow = createRow('Company', user.company.name);
+        
+    userTable.append(nameRow, userNameRow, emailRow, addressRow, phoneRow, webRow, companyRow);
+    userWrapper.append(userTable);
 
     if(user.posts) {
+        
         const postList = document.createElement('ul');
         postList.classList.add('user-posts');
         const titleElement = document.createElement('h3');
         titleElement.textContent = `User Posts (${user.posts.length}):`;
 
+        let count = 1;
         user.posts.forEach(post => {
             const liElement = document.createElement('li');
             const postLink = document.createElement('a');
-            postLink.textContent = post.title;
+            postLink.textContent = `${count++} - ${post.title}`;
             postLink.href = `./post.html?id=${post.id}`;
             liElement.append(postLink);
             postList.append(liElement);
@@ -82,10 +98,11 @@ function createUser(user){
         const titleElement = document.createElement('h3');
         titleElement.textContent = `User albums (${user.albums.length}):`;
 
+        let count = 1;
         user.albums.forEach(album => {
             const liElement = document.createElement('li');
             const albumLink = document.createElement('a');
-            albumLink.textContent = album.title;
+            albumLink.textContent = `${count++} - ${album.title}`;
             albumLink.href = `./album.html?id=${album.id}`;
     
             liElement.append(albumLink);

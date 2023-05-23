@@ -2,9 +2,15 @@ async function init(){
     const users = await fetch(`https://jsonplaceholder.typicode.com/users?_embed=posts`);
     const userData = await users.json();
 
+    const banner = document.querySelector('.banner');
+    banner.classList.add('page-title');
+    const pageTitle = document.createElement('h1');
+    pageTitle.textContent = 'Users';
+    banner.append(pageTitle);
+
     const contentElement = document.querySelector('#content');
     const userTable = createUserList(userData);
-    contentElement.append(userTable);
+    contentElement.append(banner, userTable);
 
 }
 

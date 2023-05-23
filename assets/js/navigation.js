@@ -2,6 +2,12 @@ function init(){
     
     const headerElement = document.querySelector('.header');
     const navigation = document.createElement('nav');
+    const logo = document.createElement('img');
+    logo.src = './assets/images/api.png';
+    const logoLink = document.createElement('a');
+    logoLink.href = './index.html';
+    logoLink.append(logo);
+
     navigation.classList.add('navigation');
 
     const menuLinks = [
@@ -20,7 +26,7 @@ function init(){
 
     ];
 
-    headerElement.append(navigation);
+    headerElement.append(logoLink, navigation);
     navigation.append(createMenuItems(menuLinks));
 
 }
