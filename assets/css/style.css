@@ -34,31 +34,24 @@ ul {
     position: relative;
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 3rem;
     font-size: 1.4rem;
 }
 
 /* NAVIGATION */
 
-/* .hamburger {
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translatey(-50%);
-    border: none;
-    outline: none;
-} */
+.navigation {
+    display: block;
+   
+}
 
 .primary-navigation {
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.mobile-nav-toggle {
-    display: none;
+    
 }
 
 .menu-item {
@@ -81,6 +74,37 @@ ul {
 .menu-link.active {
     background-color: #28282D;
     color: #fff;
+}
+
+.mobile-nav-toggle {
+    display: none;
+}
+
+/* SEARCH NAVIGATION */
+
+.search-form {
+    position: relative;
+    margin-left: auto;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.search-form input {
+    padding: 1rem 0;
+    padding-left: 3rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search-icon i {
+    margin: 0 10px;
+    font-size: 1.5rem;
 }
 
 /* POSTS */
@@ -379,7 +403,7 @@ table {
 .album-card-body a {
     text-decoration: none;
     font-size: 1.2rem;
-    color: #28282D;
+    color: hsl(240, 6%, 17%);
     transition: all .3s ease-in-out;
 }
 
@@ -464,6 +488,41 @@ lottie-player {
     text-align: center;
     font-size: 1.6rem;
     padding-bottom: 6rem;
+}
+
+/* SEARCH */
+
+.search-result-container {
+    grid-column: center-start / center-end;
+}
+
+.result-wrapper {
+    background: #fff;
+    padding: 2rem 2rem;
+    border-bottom: 1px solid hsl(240 6% 17% /.2);
+}
+
+.search-result-container {
+    margin-bottom: 6rem;
+}
+
+.search-result-container a {
+    text-decoration: none;
+    color: #28282D;
+}
+
+.search-result-container a:hover {
+    text-decoration: underline;
+}
+
+.result-title {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.result-title {
+    margin: 2rem 0;
+    font-size: 1.2rem;
 }
 
 @media only screen and (max-width: 1000px) {
@@ -563,6 +622,57 @@ lottie-player {
     lottie-player {
         max-height: 25rem;
         max-width: 25rem;
+    }
+
+    #search-input {
+        max-width: 15rem;
+        margin-right: 2rem;
+        margin-top: -.5rem;
+    }
+
+    .search-icon {
+        top: 45%;
+    }
+
+    .inner-post-wrapper {
+        padding: 1rem 2rem;
+        grid-template-rows: 1fr min-content 1fr min-content;
+
+    }
+
+    .inner-post-wrapper h3 {
+        font-size: 1.4rem;
+    }
+
+    .inner-post-wrapper p,
+    .inner-post-wrapper a {
+        font-size: 1.2rem;
+    }
+
+    .inner-post-wrapper a {
+        padding-bottom: 4rem;
+    }
+
+    .comment-wrapper {
+        width: 100%;
+    }
+
+    .post-card {
+        margin: 2rem 0;
+    }
+
+    .post-card h4 {
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+    }
+
+    .user-table th {
+        font-size: 1.2rem;
+    }
+
+    .user-posts li,
+    .user-albums li {
+        font-size: 1.2rem;
     }
 
 
