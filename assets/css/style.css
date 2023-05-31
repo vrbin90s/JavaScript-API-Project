@@ -621,6 +621,11 @@ lottie-player {
 
 
 @media only screen and (max-width: 784px) {
+
+    #search-input,
+    .search-icon {
+        display: none;
+    }
     
     .primary-navigation {
         width: 100%;
