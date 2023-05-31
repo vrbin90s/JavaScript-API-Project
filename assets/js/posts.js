@@ -5,7 +5,7 @@ async function init(){
 
     const id = getUrlParamValue('id');
 
-    const postCount = `?_start=0&_end=6`;
+    const postCount = `?_start=0&_end=100`;
     
     const postData = await fetchData(`https://jsonplaceholder.typicode.com/posts${postCount}&_embed=comments&_expand=user${id ? '&userId=' + id : ''}`);
     
