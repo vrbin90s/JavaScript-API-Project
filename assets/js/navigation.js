@@ -1,33 +1,36 @@
-function init() {
-  const headerElement = document.querySelector(".header");
-  const navigation = document.createElement("nav");
-  const mobileNavToggle = document.createElement("button");
-  mobileNavToggle.classList.add("mobile-nav-toggle");
-  mobileNavToggle.setAttribute("aria-control", "primary-navigation");
-  mobileNavToggle.ariaExpanded = false;
+import { MAIN_MENU_ITEMS } from "./config.js";
+import { createHTMLElement, getUrlParamValue } from "./functions.js";
 
-  const logo = document.createElement("img");
+const searchQuery = getUrlParamValue("search");
+
+export default function header() {
+  // const searchQuery = getUrlParamValue('search');
+  const headerElement = createHTMLElement("header", "header");
+  const navigation = createHTMLElement("nav", "navigation");
+
+  if (!location.pathname.endsWith("search.html")) {
+    navigation.append(createSearchForm());
+  }
+
+  navigation.append(createMenuItems());
+  headerElement.append(createLogo(), navigation, createMobileMenu(navigation));
+  
+  return headerElement;
+}
+
+function createLogo() {
+  const logo = createHTMLElement("img");
   logo.src = "./assets/images/api.png";
-  const logoLink = document.createElement("a");
+  const logoLink = createHTMLElement("a");
   logoLink.href = "./index.html";
   logoLink.append(logo);
+  return logoLink;
+}
 
-  navigation.classList.add("navigation");
-
-  const menuLinks = [
-    {
-      name: "users",
-      url: "./users.html",
-    },
-    {
-      name: "posts",
-      url: "./posts.html",
-    },
-    {
-      name: "albums",
-      url: "./albums.html",
-    },
-  ];
+function createMobileMenu(navigation) {
+  const mobileNavToggle = createHTMLElement("button", "mobile-nav-toggle");
+  mobileNavToggle.setAttribute("aria-control", "primary-navigation");
+  mobileNavToggle.ariaExpanded = false;
 
   mobileNavToggle.addEventListener("click", () => {
     const primaryNav = navigation.querySelector(".primary-navigation");
@@ -40,44 +43,18 @@ function init() {
       primaryNav.setAttribute("data-visable", false);
       mobileNavToggle.ariaExpanded = false;
     }
-
-    console.log(visibility);
   });
 
-  const searchForm = document.createElement("form");
-  searchForm.classList.add("search-form");
-  const searchInput = document.createElement("input");
-  searchInput.name = "search";
-  searchInput.id = "search-input";
-  const icon = document.createElement("span");
-  icon.classList.add("search-icon");
-  icon.innerHTML = `<i class="fa fa-search" aria-hidden="true"></i>`;
-
-  searchForm.append(icon, searchInput);
-
-  searchForm.addEventListener("submit", (event) => {
-
-    const form = event.target;
-    form.action = './search.html';
-    
-  });
-
-  headerElement.append(logoLink, searchForm, navigation, mobileNavToggle);
-  navigation.append(createMenuItems(menuLinks));
+  return mobileNavToggle;
 }
 
-function createMenuItems(menuLinks) {
-  const menuList = document.createElement("ul");
-  menuList.classList.add("primary-navigation");
+function createMenuItems() {
+  const menuList = createHTMLElement("ul", "primary-navigation");
   menuList.setAttribute("data-visable", false);
 
-  menuLinks.forEach((link) => {
-    const menuItem = document.createElement("li");
-    menuItem.classList.add("menu-item");
-
-    const linkItem = document.createElement("a");
-    linkItem.classList.add("menu-link");
-    linkItem.textContent = link.name;
+  MAIN_MENU_ITEMS.forEach((link) => {
+    const menuItem = createHTMLElement("li", "menu-item");
+    const linkItem = createHTMLElement("a", "menu-link", link.name);
     linkItem.href = link.url;
 
     menuItem.append(linkItem);
@@ -85,7 +62,7 @@ function createMenuItems(menuLinks) {
 
     const currentUrl = window.location.href;
 
-    if (currentUrl === linkItem.href) {
+    if (currentUrl.includes(linkItem.href)) {
       linkItem.classList.add("active");
     }
   });
@@ -93,4 +70,24 @@ function createMenuItems(menuLinks) {
   return menuList;
 }
 
-init();
+function createSearchForm() {
+  const searchForm = createHTMLElement("form", "search-form");
+  const searchInput = createHTMLElement("input", "search-text-input");
+  searchInput.name = "search";
+  searchInput.id = "search-input";
+  searchInput.placeholder = "Search for..";
+
+
+  const icon = createHTMLElement("span", "search-icon");
+  icon.innerHTML = `<i class="fa fa-search" aria-hidden="true"></i>`;
+
+  searchForm.append(icon, searchInput);
+
+  searchForm.addEventListener("submit", (event) => {
+    const form = event.target;
+    if(form)
+    form.action = `./search.html`;
+  });
+
+  return searchForm;
+}

@@ -1,46 +1,41 @@
+import { createHTMLElement, fetchData, selectHTMLElement, getUrlParamValue } from "./functions.js";
+import header from "./navigation.js";
+
 async function init(){
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
 
-    const apiUrl = `https://jsonplaceholder.typicode.com/`;
-    const apiQuery = `posts${id ? '?userId=' + id + '&' : '?' }_embed=comments&_expand=user`;
-    const posts = await fetch(apiUrl + apiQuery);
-    const postData = await posts.json();
-    
-    const contentElement = document.querySelector('#content');
-    
-    const banner = document.querySelector('.banner');
-    banner.classList.add('page-title');
+    const id = getUrlParamValue('id');
 
-    const pageTitle = document.createElement('h1');
-    pageTitle.textContent = 'Posts';
+    const postCount = `?_start=0&_end=6`;
+    
+    const postData = await fetchData(`https://jsonplaceholder.typicode.com/posts${postCount}&_embed=comments&_expand=user${id ? '&userId=' + id : ''}`);
+    
+    const contentElement = selectHTMLElement('#content');
+    const banner = selectHTMLElement('.banner, page-title');
+
+    const pageTitle = createHTMLElement('h1', 'page-title-text', 'Posts');
     banner.append(pageTitle);
 
     const postCards = createPostList(postData);
     contentElement.append(banner, postCards);
-    
+    contentElement.before(header());
+
 }
 
 function createPostList(posts) {
 
-    const postsWrapper = document.createElement('div');
-    postsWrapper.classList.add('posts-wrapper');
-
+    const postsWrapper = createHTMLElement('div', 'posts-wrapper');
 
     posts.forEach((post) => {
   
-        const postCard = document.createElement('div');
-        postCard.classList.add('post-card');
-        const title = document.createElement('h4');
-        const author = document.createElement('h6');
-        const comments = document.createElement('small');
-
-        const titleElement = document.createElement('a');
-        titleElement.textContent = post.title;
+        const postCard = createHTMLElement('div', 'post-card');
+        const title = createHTMLElement('h4');
+        const author = createHTMLElement('h6');
+        const comments = createHTMLElement('small', 'comment-count');
+        
+        const titleElement = createHTMLElement('a', 'post-title', post.title);
         titleElement.href = `./post.html?id=${post.id}`;
 
-        const authorElement = document.createElement('a');
-        authorElement.textContent = `Author:  ${ post.user.name }`;
+        const authorElement = createHTMLElement('a', 'author-title', `Author:  ${ post.user.name }`);
         authorElement.href = `./user.html?id=${post.user.id}`;
 
         title.append(titleElement);

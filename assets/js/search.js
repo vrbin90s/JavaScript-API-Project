@@ -1,136 +1,160 @@
+import { SEARCH_CATEGORIES } from "./config.js";
+import { createHTMLElement, fetchData, searchResults, selectHTMLElement, getUrlParamValue, setNewUrlParamValue } from "./functions.js";
+import header from "./navigation.js";
+
 async function init() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const searchQuery = urlParams.get("search").toLowerCase();
-  console.log(searchQuery);
+    const contentElement = selectHTMLElement('#content');
+    const searchQuery = getUrlParamValue('search');
+    const categoryQuery = getUrlParamValue('category');
 
-  const apiUrl = `https://jsonplaceholder.typicode.com/db`;
-  const searchRequest = await fetch(apiUrl);
-  const searchData = await searchRequest.json();
-  console.log(searchData);
-  
-  const banner = document.querySelector('.banner');
-  banner.classList.add('page-title');
-  const pageTitle = document.createElement('h1');
-  pageTitle.textContent = 'Search results';
-  banner.append(pageTitle);
-
-  const contentElement = document.querySelector('#content');
-  contentElement.append(banner, createSearchResults(searchData, searchQuery));
+    const banner = selectHTMLElement('.banner', 'page-title');
+    const pageTitle = createHTMLElement('h1', 'page-title-text', 'Search results');
+    banner.append(pageTitle);
 
 
+    contentElement.append(banner, createSearchForm(searchQuery));
+    contentElement.append(await createSearchResults(searchQuery, categoryQuery));
+    contentElement.before(header());
+
+
+}
+
+
+
+async function createSearchResults(searchQuery) {
+    
+    
+    
+    const outputElement  = createHTMLElement('div', 'search-result-container');
+    const searchForm = selectHTMLElement('.main-search-form');
+    searchForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const newSearchQuery = form['search'].value;
+
+        const postData = await fetchData(`https://jsonplaceholder.typicode.com/posts?q=${newSearchQuery}`);
+        const albumData = await fetchData(`https://jsonplaceholder.typicode.com/albums?q=${newSearchQuery}`);
+        const userData = await fetchData(`https://jsonplaceholder.typicode.com/users?q=${newSearchQuery}`);
+        const commentData = await fetchData(`https://jsonplaceholder.typicode.com/comments?q=${newSearchQuery}`);
+        const photoData = await fetchData(`https://jsonplaceholder.typicode.com/photos?q=${newSearchQuery}`);
+
+        setNewUrlParamValue(newSearchQuery);
+
+        const postResults = searchResults(postData, './post.html', 'Post', 'Total posts found:');
+        const albumResults = searchResults(albumData, './album.html', 'Album', 'Total albums found:');
+        const userResults = searchResults(userData, './user.html', 'User', 'Total users found:');
+        const commentResults = searchResults(commentData, './comment.html', 'Comment', 'Total comments found:');
+        const photoResults = searchResults(photoData, './photo.html', 'Photo', 'Total photos found:');
+
+        const selectedCategory = form['select-field'].value.toLowerCase();
+
+        outputElement.innerHTML = '';
+
+
+        if(postData.length > 0 && selectedCategory === 'posts') {
+            
+            outputElement.append(postResults);
+        }
+
+        if(albumData.length > 0 && selectedCategory === 'albums') {
+    
+            outputElement.append(albumResults);
+        }
+
+        if(userData.length > 0 && selectedCategory === 'users') {
+            outputElement.append(userResults);
+        }
+
+        if(commentData.length > 0 && selectedCategory === 'comments') {
+            outputElement.append(commentResults);
+        }
+
+        if(photoData.length > 0 && selectedCategory === 'photos') {
+            outputElement.append(photoResults);
+        }
+        if(selectedCategory === 'all'){
+            outputElement.append(postResults, albumResults, userResults, commentResults, photoResults);
+        }
+        
+    });
+
+
+    if(searchQuery) {
+
+        const postData = await fetchData(`https://jsonplaceholder.typicode.com/posts?q=${searchQuery}`);
+        const albumData = await fetchData(`https://jsonplaceholder.typicode.com/albums?q=${searchQuery}`);
+        const userData = await fetchData(`https://jsonplaceholder.typicode.com/users?q=${searchQuery}`);
+        const commentData = await fetchData(`https://jsonplaceholder.typicode.com/comments?q=${searchQuery}`);
+        const photoData = await fetchData(`https://jsonplaceholder.typicode.com/photos?q=${searchQuery}`);
+
+        const selectField = searchForm['select-field'];
+        const previousPageLocation = document.referrer;
+
+        if(postData.length > 0 && previousPageLocation.endsWith('posts.html') || previousPageLocation.endsWith('index.html')) {
+            const postResults = searchResults(postData, './post.html', 'Post', 'Total posts found:');
+            selectField.value = 'Posts';
+            outputElement.append(postResults);
+            
+        } 
+
+        if(albumData.length > 0 && previousPageLocation.endsWith('albums.html') || previousPageLocation.endsWith('index.html')) {
+            const albumResults = searchResults(albumData, './album.html' ,'Album', 'Total albums found:');
+            selectField.value = 'Albums';
+            outputElement.append(albumResults);
+        } 
+
+        if(userData.length > 0 && previousPageLocation.endsWith('users.html') || previousPageLocation.endsWith('index.html')) {
+            const userResults = searchResults(userData, './user.html' ,'User', 'Total users found:');
+            selectField.value = 'Users';
+            outputElement.append(userResults);
+        }
+        if(commentData.length > 0 && previousPageLocation.endsWith('index.html')) {
+            const commentResults = searchResults(commentData, './comment.html' ,'Comments', 'Total comments found:');
+            selectField.value = 'All';
+            outputElement.append(commentResults);
+        } 
+        if(photoData.length > 0 && previousPageLocation.endsWith('index.html')) {
+            const photoResults = searchResults(photoData, './photo.html' ,'Photos', 'Total photos found:');
+            selectField.value = 'All';
+            outputElement.append(photoResults);
+        }  
+        
+    }
+    
+    return outputElement;
+}
+
+
+
+function createSearchForm(searchQuery) {
+    const formWrapper = createHTMLElement('div', 'search-form-wrapper');
+    const form = createHTMLElement('form', 'main-search-form');
+    
+    const inputText = createHTMLElement('input', 'text-field');
+    inputText.placeholder = 'Search for...';
+    inputText.name = 'search';
+    inputText.value =  searchQuery;
+    
+    const button = createHTMLElement('button', 'submit-button', 'Search');
+    button.type = 'submit';
+
+    const icon = createHTMLElement("span", "search-icon");
+    icon.innerHTML = `<i class="fa fa-search" aria-hidden="true"></i>`;
+
+    const selectElement = createHTMLElement('select', 'select-field');
+    selectElement.id = 'select-field';
+    form.append(inputText, selectElement, button);
+    formWrapper.append(icon,form);
+
+    SEARCH_CATEGORIES.forEach(category => {
+        const catElement = createHTMLElement('option', 'select-options', category);
+        catElement.value = category;
+        selectElement.append(catElement);
+    });
+
+    return formWrapper;
 }
 
 init();
 
-function createSearchResults(database, searchQuery) {
-    const resultElement = document.createElement('div');
-    resultElement.classList.add('search-result-container');
-    const postResultTitle = document.createElement('h4');
-    postResultTitle.classList.add('result-title');
-    const albumResultTitle = document.createElement('h4');
-    albumResultTitle.classList.add('result-title');
-    const userResultTitle = document.createElement('h4');
-    userResultTitle.classList.add('result-title');
 
-    let postCounter = 0;
-    
-    resultElement.append(postResultTitle);
-    database.posts.forEach(post => {
-        const title = post.title.toLowerCase();
-        
-        if(title.includes(searchQuery)) {
-            
-            resultElement.append(createPostsResults(post));
-            postCounter++;
-            postResultTitle.textContent = `Total posts found: ${postCounter}`;
-        }
-    });
-
-    
-
-    resultElement.append(albumResultTitle);
-    let albumCounter = 0;
-
-    database.albums.forEach(album => {
-        const title = album.title.toLowerCase();
-
-        if(title.includes(searchQuery)) {
-            resultElement.append(createAlbumResults(album));
-            albumCounter++;
-            albumResultTitle.textContent = `Total albums found: ${albumCounter}`;
-        }
-    })
-
-    resultElement.append(userResultTitle);
-    let userCounter = 0;
-
-    database.users.forEach(user => {
-        const name = user.name.toLowerCase();
-
-        if(name.includes(searchQuery)) {
-            resultElement.append(createUserResults(user));
-            userCounter++;
-            userResultTitle.textContent = `Total users found: ${userCounter}`;
-        }
-       
-    });
-
-    if(postCounter === 0 && albumCounter === 0 && userCounter === 0) {
-        const noResultsElement = document.createElement('h3');
-        noResultsElement.textContent = `No results found`;
-        resultElement.append(noResultsElement);
-    } 
-
-    return resultElement;
-}
-
-function createPostsResults(post){
-    const outputElement = document.createElement('div');
-    outputElement.classList.add('result-wrapper');
-    
-    const postTitle = document.createElement('h3');
-    postTitle.textContent = `${post.title} - Post`;
-    
-    const postLink = document.createElement('a');
-    postLink.classList.add('search-result-link');
-    postLink.href = `./post.html?id=${post.id}`;
-    postLink.append(postTitle);
-    
-    outputElement.append(postLink);
-
-    return outputElement;
-}
-
-function createAlbumResults(album){
-    const outputElement = document.createElement('div');
-    outputElement.classList.add('result-wrapper');
-    
-    const albumTitle = document.createElement('h3');
-    albumTitle.textContent = `${album.title} - Album`;
-    
-    const albumLink = document.createElement('a');
-    albumLink.classList.add('search-result-link');
-    albumLink.href = `./album.html?id=${album.id}`;
-    albumLink.append(albumTitle);
-    
-    outputElement.append(albumLink);
-
-    return outputElement;
-}
-
-function createUserResults(user){
-    const outputElement = document.createElement('div');
-    outputElement.classList.add('result-wrapper');
-    
-    const userTitle = document.createElement('h3');
-    userTitle.textContent = `${user.name} - User`;
-    
-    const userLink = document.createElement('a');
-    userLink.classList.add('search-result-link');
-    userLink.href = `./user.html?id=${user.id}`;
-    userLink.append(userTitle);
-    
-    outputElement.append(userLink);
-
-    return outputElement;
-}

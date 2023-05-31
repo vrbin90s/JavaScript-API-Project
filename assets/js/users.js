@@ -1,32 +1,35 @@
-async function init(){
-    const users = await fetch(`https://jsonplaceholder.typicode.com/users?_embed=posts`);
-    const userData = await users.json();
+import { createHTMLElement, fetchData, selectHTMLElement } from "./functions.js";
+import header from "./navigation.js";
 
-    const banner = document.querySelector('.banner');
-    banner.classList.add('page-title');
-    const pageTitle = document.createElement('h1');
-    pageTitle.textContent = 'Users';
+
+async function init(){
+    
+    const userData = await fetchData(`https://jsonplaceholder.typicode.com/users?_embed=posts`);
+
+    const banner = selectHTMLElement('.banner', 'page-title');
+    const pageTitle = createHTMLElement('h1', 'page-title-text', 'Users');
     banner.append(pageTitle);
 
-    const contentElement = document.querySelector('#content');
+    const contentElement = selectHTMLElement('#content');
     const userTable = createUserList(userData);
     contentElement.append(banner, userTable);
+    contentElement.before(header());
+
 
 }
 
 function createUserList(users){
 
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
+    const table = createHTMLElement('table');
+    const thead = createHTMLElement('thead');
+    const tbody = createHTMLElement('tbody');
 
-    const headingRow = document.createElement('tr');
+    const headingRow = createHTMLElement('tr');
     
     const headings = ['User Name', 'Total Posts'];
 
     headings.forEach((heading) => {
-        const headingCell = document.createElement('th');
-        headingCell.textContent = heading;
+        const headingCell = createHTMLElement('th', 'user-table-heading', heading);
         headingRow.append(headingCell);
         thead.append(headingRow);
         
@@ -34,16 +37,13 @@ function createUserList(users){
 
     users.forEach(user => {
 
-        const row = document.createElement('tr');
-        const nameCell = document.createElement('td');
-        const postsCell = document.createElement('td');
-        postsCell.classList.add('post-count');
+        const row = createHTMLElement('tr');
+        const nameCell = createHTMLElement('td', 'name-table-cell');
+        const postsCell = createHTMLElement('td', 'count-table-cell')
         postsCell.textContent = user.posts.length;
-
-        const linkElement = document.createElement('a');
+        const linkElement = createHTMLElement('a', 'link-element', user.name);
         linkElement.href = `user.html?id=${user.id}`;
-        linkElement.textContent = user.name;
-
+       
         nameCell.append(linkElement);
         row.append(nameCell, postsCell);
         tbody.append(row);

@@ -1,16 +1,18 @@
+import { createHTMLElement, fetchData, getUrlParamValue, selectHTMLElement } from "./functions.js";
+import header from "./navigation.js";
 async function init(){
-    const albums = await fetch(`https://jsonplaceholder.typicode.com/albums?_embed=photos&_expand=user`);
-    const albumData = await albums.json();
+    const id = getUrlParamValue('id');
 
-    const banner = document.querySelector('.banner');
-    banner.classList.add('page-title');
-    const pageTitle = document.createElement('h1');
-    pageTitle.textContent = 'Albums';
+    const albumData = await fetchData(`https://jsonplaceholder.typicode.com/albums?_embed=photos&_expand=user${id ? '&userId=' + id : ''}`);
+
+    const banner = selectHTMLElement('.banner', 'page-title');
+    const pageTitle = createHTMLElement('h1', 'Albums');
     banner.append(pageTitle);
 
-    const contentElement = document.querySelector('#content');
+    const contentElement = selectHTMLElement('#content');
     const albumCards = createAlbumList(albumData);
     contentElement.append(banner, albumCards);
+    contentElement.before(header());
 
 }
 
@@ -18,45 +20,30 @@ async function init(){
 
 function createAlbumList(albums) {
 
-    const albumWrapper = document.createElement('div');
-    albumWrapper.classList.add('album-wrapper');
-
+    const albumWrapper = createHTMLElement('div', 'album-wrapper');
 
     albums.forEach(album => {
 
-        const albumCard = document.createElement('div');
-        albumCard.classList.add('album-card');
-        const cardHeader = document.createElement('div');
-        cardHeader.classList.add('album-card-header');
-        const cardBody = document.createElement('div');
-        cardBody.classList.add('album-card-body');
-        const title = document.createElement('h4');
-        title.textContent = album.title;
+        const albumCard = createHTMLElement('div', 'album-card');
+        const cardHeader = createHTMLElement('div', 'album-card-header');
+        const cardBody = createHTMLElement('div', 'album-card-body');
         
-        const author = document.createElement('span');
-        author.textContent = album.user.name;
-
-        const authorLink = document.createElement('a');
-        authorLink.textContent = `by: `;
+        const title = createHTMLElement('h4', 'album-title', album.title);
+        const authorLink = createHTMLElement('a', 'author-link', `by: ${album.user.name}`);
         authorLink.href = `./user.html?id=${album.user.id}`;
-        authorLink.append(author);
         
-        const photoCountElement = document.createElement('small');
-        photoCountElement.classList.add('album-image-count');
-        photoCountElement.textContent = `Total photos: ${album.photos.length}`;
-        
-        const photoElement = document.createElement('img');
-        photoElement.classList.add('album-thumbnail');
+        const photoCountElement = createHTMLElement('small', 'album-image-count', `Total photos: ${album.photos.length}`);
+        const photoElement = createHTMLElement('img', 'album-thumbnail');
         photoElement.src = album.photos[1].url;
 
-        const imageLink = document.createElement('a');
-        imageLink.classList.add('image-link');
+        const imageLink = createHTMLElement('a', 'image-link');
         imageLink.href = `./album.html?id=${album.id}`;
         imageLink.append(photoElement);
         
         cardHeader.append(imageLink);
         cardBody.append(title, authorLink, photoCountElement);
         albumCard.append(cardHeader, cardBody);
+        
         albumWrapper.append(albumCard);
     });
 

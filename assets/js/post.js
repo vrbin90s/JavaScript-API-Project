@@ -1,76 +1,63 @@
-async function init(){
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
+import { createHTMLElement, fetchData, selectHTMLElement, getUrlParamValue } from "./functions.js";
+import header from "./navigation.js";
 
-    const users = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}/?_embed=comments&_expand=user`);
-    const postData = await users.json();
-    console.log(postData);
-    const contentElement = document.querySelector('#content');
+async function init(){
+    
+    const id = getUrlParamValue('id');
+
+    const postData = await fetchData(`https://jsonplaceholder.typicode.com/posts/${id}/?_embed=comments&_expand=user`);
+
+    const contentElement = selectHTMLElement('#content');
 
     if(id) {
-        const postElement = createUser(postData);
+        const postElement = createPost(postData);
         contentElement.append(postElement);
     } else {
-        const errorMessage = document.createElement('p');
-        errorMessage.textContent = `Post not found`;
-        const usersLink = document.createElement('a');
+        const errorMessage = createHTMLElement('p', 'error-message', 'Post not found');
+        const usersLink = createHTMLElement('a', 'normal-link', 'Back to post page');
         usersLink.href = './posts.html';
-        usersLink.textContent = 'Back to post page';
+
         contentElement.append(errorMessage, usersLink);
     }
+    contentElement.before(header());
+
 
 }   
 
-function createUser(post){
-    const postElement = document.createElement('article');
-    postElement.classList.add('post');
-    const innerPostWrapper = document.createElement('div');
-    innerPostWrapper.classList.add('inner-post-wrapper');
-    const title = document.createElement('h3');
-    const body = document.createElement('p');
-    const author = document.createElement('div');
-    const authorLink = document.createElement('a');
-    const authorSpan = document.createElement('span');
-    const morePostsFromAuthorLink = document.createElement('a');
+function createPost(post){
+    const postElement = createHTMLElement('article', 'post');
+    const innerPostWrapper = createHTMLElement('div', 'inner-post-wrapper');
+    const title = createHTMLElement('h3', 'post-title', post.title);
+    const body = createHTMLElement('p', 'post-body', post.body);
+    const authorLink = createHTMLElement('a', 'author-link', `by: ${post.user.name}`);
+    authorLink.href = (`./user.html?id=${post.id}`);
+    
+    const morePostsFromAuthorLink = createHTMLElement('a');
     morePostsFromAuthorLink.innerHTML = 'More posts from this Author 	&rarr;';
     morePostsFromAuthorLink.href = `./posts.html?id=${post.user.id}`;
 
-    authorLink.href = (`./user.html?id=${post.id}`);
-    const commentList = document.createElement('div');
-    commentList.classList.add('comments-container');
+    const commentList = createHTMLElement('div', 'comments-container');
+    const heading = createHTMLElement('h4', 'comment-heading');
     
-    title.textContent = post.title;
-    authorSpan.textContent = `by: `;
-    body.textContent = post.body;
-    authorLink.textContent = post.user.name;
-    
-    const heading = document.createElement('h4');
-    
-
     if(post.comments) {
         commentList.prepend(heading);
         post.comments.forEach(comment => {
             
-            const wrapper = document.createElement('div');
-            const titleWrapper = document.createElement('div');
-            titleWrapper.classList.add('title-wrapper');
-            const title = document.createElement('h4');
-            const body = document.createElement('p');
-            const email = document.createElement('small');
+            const wrapper = createHTMLElement('div', 'comment-wrapper');
+            const titleWrapper = createHTMLElement('div', 'title-wrapper');
+            const title = createHTMLElement('h4', 'comment-title', comment.name);
+            const body = createHTMLElement('p', 'comment-body', comment.body);
+            const email = createHTMLElement('small', 'commenter-email', `User email: ${comment.email}`);
             
             heading.textContent = 'Comments';
-            wrapper.classList.add('comment-wrapper');
-            title.textContent = comment.name;
-            body.textContent = comment.body;
-            email.textContent = `User email: ${comment.email}`;
+
             titleWrapper.append(title);
             wrapper.append(titleWrapper, body, email);
             commentList.append(wrapper);
         });
     }
  
-    author.append(authorSpan, authorLink);
-    innerPostWrapper.append(title, author, body, morePostsFromAuthorLink);
+    innerPostWrapper.append(title, authorLink, body, morePostsFromAuthorLink);
     postElement.append(innerPostWrapper, commentList);
     return postElement;
 }

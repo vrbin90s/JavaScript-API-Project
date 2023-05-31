@@ -1,49 +1,45 @@
+import { createHTMLElement, fetchData, getUrlParamValue, selectHTMLElement } from "./functions.js";
+import header from "./navigation.js";
+
 async function init(){
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
 
-    const users = await fetch(`https://jsonplaceholder.typicode.com/albums/${id}/?_embed=photos&_expand=user`);
-    const albumData = await users.json();
-    const contentElement = document.querySelector('#content');
+    const id = getUrlParamValue('id');
 
-    const banner = document.querySelector('.banner');
-    banner.classList.add('page-title');
-    const pageTitle = document.createElement('h1');
-    pageTitle.textContent = 'Album';
+    const albumData = await fetchData(`https://jsonplaceholder.typicode.com/albums/${id}/?_embed=photos&_expand=user`);
+    const contentElement = selectHTMLElement('#content');
+    const banner = selectHTMLElement('.banner', 'page-title');
+    const pageTitle = createHTMLElement('h1', null, 'Album');
+
     banner.append(pageTitle);
-
+    banner.before(header());
+    
     if(id) {
         const albumElement = createAlbum(albumData);
         contentElement.append(albumElement);
     } else {
-        const errorMessage = document.createElement('p');
-        errorMessage.textContent = `Album not found`;
-        const usersLink = document.createElement('a');
+        const errorMessage = createHTMLElement('p', 'error-message', 'Album not found');
+        const usersLink = createHTMLElement('a', 'users-link', 'Back to albums page');
         usersLink.href = './albums.html';
-        usersLink.textContent = 'Back to albums page';
         contentElement.append(errorMessage, usersLink);
     }
-
-    lightGallery(document.getElementById('light-gallery'), {
+    
+    lightGallery(selectHTMLElement('#light-gallery'), {
         thumbnail: true,
         width: '100%'
     });
-
+    
 }   
 
 function createAlbum(album){
-    const albumElement = document.createElement('div');
-    albumElement.classList.add('album');
-    const innerAlbumWrapper = document.createElement('div');
-    innerAlbumWrapper.classList.add('inner-album-container');
-    const title = document.createElement('h3');
-    const body = document.createElement('p');
-    const author = document.createElement('div');
-    const authorLink = document.createElement('a');
+    const albumElement = createHTMLElement('div', 'album');
+    const innerAlbumWrapper = createHTMLElement('div', 'inner-album-container');
+    const title = createHTMLElement('h3', 'album-title', album.title);
+    const body = createHTMLElement('p', 'album-body', album.body);
+    const authorLink = createHTMLElement('a', 'auhotr-link', `by: ${album.user.name}`);
+    authorLink.href = (`./user.html?id=${album.user.id}`);
 
     const lightGallery = document.createElement('div');
     lightGallery.id = 'light-gallery';
-
     album.photos.forEach(photo => {
         const galleryLink = document.createElement('a');
         galleryLink.href = photo.url;
@@ -56,18 +52,9 @@ function createAlbum(album){
 
     });
 
-   
-
-    authorLink.href = (`./user.html?id=${album.user.id}`);
-    
-    title.textContent = album.title;
-    body.textContent = album.body;
-    authorLink.textContent = `by: ${album.user.name}`;
-    
- 
-    author.append(authorLink);
-    innerAlbumWrapper.append(title, author, body);
+    innerAlbumWrapper.append(title, authorLink, body);
     albumElement.append(innerAlbumWrapper, lightGallery);
+    
     return albumElement;
 }
 
